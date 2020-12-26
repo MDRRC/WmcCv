@@ -46,7 +46,7 @@ class Idle : public wmcCv
 {
     /**
      */
-    void entry() override{ m_PomActive = false; };
+    void entry() override { m_PomActive = false; };
 
     /**
      * Handle cv command events.
@@ -162,6 +162,7 @@ class EnterPomAddress : public wmcCv
                 transit<EnterCvNumber>();
             }
             break;
+        case released: break;
         }
 
         if (DataChanged == true)
@@ -251,10 +252,7 @@ class EnterCvNumber : public wmcCv
 {
     /**
      */
-    void entry() override
-    {
-        m_wmcCvTft.ShowDccNumber(m_cvNumber, true, m_PomActive);
-    };
+    void entry() override { m_wmcCvTft.ShowDccNumber(m_cvNumber, true, m_PomActive); };
 
     /**
      * Handle forwarded pulse switch events.
@@ -352,6 +350,7 @@ class EnterCvNumber : public wmcCv
                 transit<EnterCvValueChange>();
             }
             break;
+        case released: break;
         }
 
         if (DataChanged == true)
@@ -585,6 +584,7 @@ class EnterCvValueChange : public wmcCv
             break;
         case pushedNormal:
         case pushedlong: transit<EnterCvWrite>(); break;
+        case released: break;
         }
 
         if (DataChanged == true)
