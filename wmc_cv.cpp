@@ -326,13 +326,7 @@ class EnterCvNumber : public wmcCv
             }
             break;
         case pushedShort:
-            if (m_PomActive == false)
-            {
-                EventCvProg.Request = cvExit;
-                send_event(EventCvProg);
-                transit<Idle>();
-            }
-            else
+            if (m_PomActive == true)
             {
                 /* Back to entering cv number. */
                 m_wmcCvTft.ShowDccNumberRemove(m_PomActive);
@@ -340,7 +334,6 @@ class EnterCvNumber : public wmcCv
             }
             break;
         case pushedNormal:
-        case pushedlong:
             if (m_PomActive == false)
             {
                 transit<EnterCvValueRead>();
@@ -349,6 +342,11 @@ class EnterCvNumber : public wmcCv
             {
                 transit<EnterCvValueChange>();
             }
+            break;
+        case pushedlong:
+            EventCvProg.Request = cvExit;
+            send_event(EventCvProg);
+            transit<Idle>();
             break;
         case released: break;
         }
@@ -697,7 +695,8 @@ class EnterCvWrite : public wmcCv
         }
         else
         {
-            /* No response from Z21 when POM programming, so back to entering address. */
+            /* No response from Z21 when POM programming, so back to entering address.
+             */
             m_wmcCvTft.ShowDccValueRemove(m_PomActive);
             m_wmcCvTft.ShowDccNumberRemove(m_PomActive);
             transit<EnterPomAddress>();
@@ -732,7 +731,8 @@ class EnterCvWrite : public wmcCv
             m_timeOutCount++;
             m_wmcCvTft.UpdateRunningWheel(m_timeOutCount);
 
-            /* If after 10 seconds still no response, keep screen to retry writing.... */
+            /* If after 10 seconds still no response, keep screen to retry
+             * writing.... */
             if (m_timeOutCount > TIME_OUT_10_SEC)
             {
                 transit<EnterCvValueChange>();
